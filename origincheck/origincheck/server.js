@@ -1,4 +1,5 @@
 import http from 'node:http';
+import express from "express";
 import { loadConfig } from './src/config.js';
 import { createHandler } from './src/app.js';
 import { createRateLimiter } from './src/ratelimit.js';
@@ -10,7 +11,7 @@ const config = loadConfig();
 const providers = { image: createSightengine(), text: createGptzero() };
 const limiter = createRateLimiter({ limit: config.rateLimitPerMinute });
 const handler = createHandler({ config, providers, checkProvenance, limiter });
-const express = require("express");
+import express from "express";
 const app = express();
 
 const PORT = process.env.PORT || 10000;
