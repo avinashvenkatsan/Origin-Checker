@@ -1,29 +1,45 @@
-import http from 'node:http';
 import express from 'express';
-import { loadConfig } from './src/config.js';
-import { createHandler } from './src/app.js';
-import { createRateLimiter } from './src/ratelimit.js';
-import { createSightengine } from './src/providers/sightengine.js';
-import { createGptzero } from './src/providers/gptzero.js';
-import { checkProvenance } from './src/provenance.js';
-
-const config = loadConfig();
-const providers = { image: createSightengine(), text: createGptzero() };
-const limiter = createRateLimiter({ limit: config.ratelimitPerMinute });
-const handler = createHandler({ config, providers, checkProvenance, limiter });
+import { analyzeText, analyzeMetadata } from './detectors.js';
 
 const app = express();
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-    res.send("Application is running!");
+// Middleware to parse incoming JSON bodies
+app.use(express.json());
+
+// Base health check endpoint
+app.get('/', (req, res) => {
+    res.json({ status: "Origin-Checker API is operational" });
 });
 
-const server = http.createServer(handler);
+// Primary POST endpoint to handle detection tasks
+app.post('/api/check', async (req, res) => {
+    try {
+        const { textContent, fileData } = req.body;
+        const responseData = { success: true, timestamp: new Date() };
 
-server.requestTimeout = 60000;
-server.headersTimeout = 15000;
+        // Execute text detection if text content is supplied
+        if (textContent) {
+            responseData.textAnalysis = analyzeText(textContent);
+        }
 
-server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+        // Execute metadata/origin detection if file data is supplied
+        if (fileData) {
+            // Assumes fileData is passed as a base64 string or buffer stream
+            const buffer = Buffer.from(fileData, 'base64');
+            responseData.fileAnalysis = await analyzeMetadata(buffer);
+        }
+
+        res.status(200).json(responseData);
+    } catch (error) {
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
+
+// Start listening for incoming network requests
+app.listen(PORT, () => {
+    console.log(`Server successfully started on port ${PORT}`);
 });
