@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OriginCheck — estimate whether content was AI-generated</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header>
+    <h1>OriginCheck</h1>
+    <p>Get an <strong>estimate</strong> of whether an image or text was AI-generated. No detector is perfect; results are evidence, not proof.</p>
+  </header>
+  <main id="main">
+    <div id="config-banner" class="state" hidden></div>
+    <div role="tablist" aria-label="Choose what to check" class="tabs">
+      <button role="tab" id="tab-image" aria-selected="true" aria-controls="panel-image">Check an image</button>
+      <button role="tab" id="tab-text" aria-selected="false" aria-controls="panel-text" tabindex="-1">Check text</button>
+    </div>
+
+    <section role="tabpanel" id="panel-image" aria-labelledby="tab-image">
+      <p id="image-empty" class="muted">Choose a PNG, JPEG, or WebP image to begin. <span id="image-limits"></span></p>
+      <label for="image-input" class="btn secondary">Choose image</label>
+      <input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" class="visually-hidden">
+      <div id="image-preview" hidden>
+        <img id="image-preview-img" alt="Preview of the selected image">
+        <button type="button" id="image-remove" class="btn secondary">Remove image</button>
+      </div>
+      <p id="image-error" class="field-error" role="alert"></p>
+      <button type="button" id="image-submit" class="btn" disabled>Analyze image</button>
+      <p class="muted" id="image-privacy"></p>
+    </section>
+
+    <section role="tabpanel" id="panel-text" aria-labelledby="tab-text" hidden>
+      <label for="text-input">Paste the text to check</label>
+      <textarea id="text-input" rows="10" aria-describedby="text-counts text-help"></textarea>
+      <p id="text-counts" class="muted" aria-live="off">0 words · 0 characters</p>
+      <p id="text-help" class="muted"></p>
+      <button type="button" id="text-submit" class="btn" disabled>Analyze text</button>
+      <p class="muted" id="text-privacy"></p>
+    </section>
+
+    <div id="progress" hidden role="status" aria-live="polite">
+      <progress aria-label="Analysis in progress"></progress>
+      <span id="progress-text">Analyzing…</span>
+    </div>
+    <div id="output" tabindex="-1" aria-live="polite"></div>
+  </main>
+  <footer>
+    <p>Submissions are processed only for the requested analysis and are not stored by OriginCheck. Never share content you don’t have the right to share.</p>
+  </footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
