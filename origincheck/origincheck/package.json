@@ -16,5 +16,6 @@
   },
   "dependencies": {
     "express": "^4.19.2"
+    "exifr":"^7.1.3"
   }
 }
