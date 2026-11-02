@@ -4,12 +4,17 @@
   "description": "Estimates whether an image or text was AI-generated, with honest scoring, provenance checks, and a measurable evaluation pipeline.",
   "type": "module",
   "private": true,
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server.js",
     "start:env": "node --env-file=.env server.js",
     "test": "node --test tests/*.test.js",
     "eval:image": "node eval/run.js --type image --provider sightengine --manifest eval/datasets/image-manifest.csv",
     "eval:text": "node eval/run.js --type text --provider gptzero --manifest eval/datasets/text-manifest.csv"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
