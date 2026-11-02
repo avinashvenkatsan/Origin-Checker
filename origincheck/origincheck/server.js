@@ -11,7 +11,6 @@ const config = loadConfig();
 const providers = { image: createSightengine(), text: createGptzero() };
 const limiter = createRateLimiter({ limit: config.rateLimitPerMinute });
 const handler = createHandler({ config, providers, checkProvenance, limiter });
-import express from "express";
 const app = express();
 
 const PORT = process.env.PORT || 10000;
